@@ -149,7 +149,7 @@ MAPS[2] = {
 var ENEMIES = {
   shadow_wolf: { name: "シャドウウルフ", hp: 15, atk: 5, def: 2, exp: "影に潜む狼。" },
   dark_slime:  { name: "ダークスライム", hp: 12, atk: 4, def: 3, exp: "闇を纏ったスライム。" },
-  guardian:    { name: "塔の守護者",     hp: 40, atk: 8, def: 4, exp: "水晶塔を守る強大な魔物。" }
+  guardian:    { name: "塔の守護者",     hp: 26, atk: 6, def: 4, exp: "水晶塔を守る強大な魔物。" }
 };
 
 // ---- game state ----
@@ -475,12 +475,15 @@ function checkCrystal(px, py) {
     if (px === cr.x && py === cr.y && !G.collectedCrystals[cr.id]) {
       G.collectedCrystals[cr.id] = true;
       G.shards.push(cr.item);
+      G.hp = G.maxHp;
+      G.energy = G.maxEnergy;
       map.tiles[cr.y][cr.x] = TILE.FLOOR;
       G.dialogue = {
         speaker: "クリスタル",
         lines: [
           "「" + cr.item + "」が輝きを放ち、手の中に収まった！",
-          "欠片の力が勇者の魂に溶け込んでいく……。"
+          "欠片の力が勇者の魂に溶け込んでいく……。",
+          "HPとENが全回復した！"
         ],
         idx: 0
       };
@@ -506,9 +509,16 @@ function checkExit(px, py) {
       updateHUD();
       // area transition message
       var newMap = MAPS[G.area];
+      var transitionLines = [ex.label + "\n「" + newMap.name + "」に到着した。"];
+      if (G.area === 2 && G.shards.length >= 2) {
+        G.hp = G.maxHp;
+        G.energy = G.maxEnergy;
+        updateHUD();
+        transitionLines.push("二つの欠片が呼応し、HPとENが全回復した。");
+      }
       G.dialogue = {
         speaker: "……",
-        lines: [ex.label + "\n「" + newMap.name + "」に到着した。"],
+        lines: transitionLines,
         idx: 0
       };
       showDialogueLine();

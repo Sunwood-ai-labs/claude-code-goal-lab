@@ -57,6 +57,28 @@ Open `http://localhost:8777` in any modern browser.
 
 **Verification:** `node --check examples/goal-rpg/game.js` — passed.
 
+## Redelivery 2 — Clearability Fix
+
+**Clearability issue found:** the route existed, but the Guardian battle was too punishing for a normal no-grind clear. The Guardian had enough HP and attack power to beat the player after the player spent available EN, and the game had no reliable recovery before the final battle.
+
+**Fix applied:**
+- Guardian stats changed from `hp: 40, atk: 8` to `hp: 26, atk: 6`.
+- Collecting the Wisdom Shard now restores HP and EN.
+- Entering the Crystal Tower with both shards now restores HP and EN.
+- Added `scripts/verify-goal-rpg.mjs`, an automated clear-route acceptance test.
+
+**Verification:**
+
+```bash
+node --check examples/goal-rpg/game.js
+node scripts/verify-goal-rpg.mjs
+```
+
+```text
+GOAL_RPG_CLEAR_OK
+steps=34 battlesWon=1 hp=12 en=3
+```
+
 ## Known Limitations
 
 - No audio/music (browser RPG without Web Audio)

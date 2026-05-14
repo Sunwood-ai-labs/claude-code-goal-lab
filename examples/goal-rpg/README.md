@@ -22,6 +22,21 @@ Then open `http://localhost:8777` in a browser.
 
 In battle: use the on-screen buttons or keys 1-4.
 
+## Clear Verification
+
+From the repository root:
+
+```bash
+node --check examples/goal-rpg/game.js
+node scripts/verify-goal-rpg.mjs
+```
+
+Expected output:
+
+```text
+GOAL_RPG_CLEAR_OK
+```
+
 ## Gameplay
 
 1. Talk to the Village Elder and collect the **Shard of Courage** from the chest.
