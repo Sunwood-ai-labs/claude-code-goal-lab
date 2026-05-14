@@ -127,6 +127,11 @@ clearDialogue();
 
 move(DIR.UP, 5, { allowBattle: true });
 assertState(context.G.battle && context.G.battle.enemyId === "guardian", "guardian battle did not start");
+assertState(el("enemy-hp-text").textContent === "HP: 26/26", "guardian initial HP text is wrong");
+playerSpecial();
+assertState(context.G.battle && context.G.battle.hp === 18, "guardian HP did not decrease internally after special");
+assertState(el("enemy-hp-text").textContent === "HP: 18/26", "guardian HP text did not update after special");
+assertState(el("enemy-hp-bar").style.width === `${18 / 26 * 100}%`, "guardian HP bar did not update after special");
 
 let guard = 20;
 while (context.G.screen !== "ending" && guard-- > 0) {
@@ -136,6 +141,7 @@ while (context.G.screen !== "ending" && guard-- > 0) {
 }
 
 assertState(context.G.screen === "ending", "ending screen was not reached");
+assertState(el("btn-special").disabled, "special button should be disabled when EN is below 3");
 assertState(el("ending-stats").innerHTML.includes("勇気の欠片"), "ending stats missing courage shard");
 assertState(el("ending-stats").innerHTML.includes("知恵の欠片"), "ending stats missing wisdom shard");
 

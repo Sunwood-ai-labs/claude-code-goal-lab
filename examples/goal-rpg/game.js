@@ -563,17 +563,22 @@ function startBattle(enemyId, encounterKey) {
 function updateBattleUI() {
   var b = G.battle;
   elEnemyName.textContent = b.name;
+  updateEnemyHpUI();
+  setBattleButtons(true);
+  elBattleLog.textContent = elBattleLog.textContent || "どうする？";
+}
+
+function updateEnemyHpUI() {
+  var b = G.battle;
   var pct = Math.max(0, b.hp / b.maxHp * 100);
   elEnemyBar.style.width = pct + "%";
   elEnemyHpTx.textContent = "HP: " + b.hp + "/" + b.maxHp;
-  setBattleButtons(true);
-  elBattleLog.textContent = elBattleLog.textContent || "どうする？";
 }
 
 function setBattleButtons(enabled) {
   $("btn-attack").disabled = !enabled;
   $("btn-defend").disabled = !enabled;
-  $("btn-special").disabled = !enabled;
+  $("btn-special").disabled = !enabled || G.energy < 3;
   $("btn-flee").disabled = !enabled;
 }
 
@@ -584,6 +589,7 @@ function playerAttack() {
   G.defending = false;
   var dmg = Math.max(1, 6 - b.def + Math.floor(Math.random() * 3));
   b.hp -= dmg;
+  updateEnemyHpUI();
   elBattleLog.textContent = "冒険者の攻撃！ " + dmg + " のダメージ！";
   setBattleButtons(false);
   if (b.hp <= 0) {
@@ -613,6 +619,7 @@ function playerSpecial() {
   G.defending = false;
   var dmg = Math.max(1, 12 - G.battle.def + Math.floor(Math.random() * 4));
   G.battle.hp -= dmg;
+  updateEnemyHpUI();
   elBattleLog.textContent = "✨ とくぎ発動！ " + dmg + " のダメージ！";
   setBattleButtons(false);
   updateHUD();
